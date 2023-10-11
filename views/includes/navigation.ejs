@@ -1,0 +1,10 @@
+<nav>
+    <ul>
+        <li><a href="/">Accueil</a></li>
+        <% try { %>
+            <% if (user) { %>
+                <li><a href="/logout">Déconnexion</a></li>
+            <% } %>
+        <% } catch (e) {} %>
+    </ul>
+</nav>
