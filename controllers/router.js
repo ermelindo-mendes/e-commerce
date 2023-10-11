@@ -16,12 +16,12 @@ router.get('/', isLogin, async (req, res) => {
 })
 
 router.get('/login', async (req, res) => {
-    let john = new Users({
-        username: 'john',
-        email: 'john',
-        password: 'john',
-    })
-    await john.save()
+    // let john = new Users({
+    //     username: 'john',
+    //     email: 'john',
+    //     password: 'john',
+    // })
+    // await john.save()
     res.render('login')
 })
 
