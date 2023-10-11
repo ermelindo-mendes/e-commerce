@@ -1,6 +1,8 @@
 const express   = require('express');
+const bcrypt = require('bcrypt');
 let router      = express.Router();
 const Users     = require('../models/users');
+// constrouteUser = express.Router('./controllers/users')
 
 const isLogin = (req, res, next) => {
     if(req.session && req.session.user) {
@@ -10,8 +12,7 @@ const isLogin = (req, res, next) => {
     }
 }
 
-router.get('/', isLogin, async (req, res) => {
-   
+router.get('/',isLogin, async (req, res) => {
     res.render('index', { user: req.session.user })
 })
 
@@ -36,32 +37,6 @@ router.get('/users', async(req, res) => {
         console.error(error);
         res.status(500).send(error);
       }
-})
-// get One
-router.get('/user/:email', async (req, res) => {
-    const { email } = req.params;
-    try {
-        const user = await Users.findOne({ email: email });
-        res.send(user);
-      } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-      }
-})
-
-// Create
-router.post('/user', async (req, res) => {
-
-    const { username, email, password } = req.body;
-
-    try {
-        const user = new Users({ username, email, password });
-        await user.save();
-        res.send(user);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-    }
 })
 
 // Delete
@@ -98,11 +73,26 @@ router.put('/user/:email', async (req, res) => {
     }
 });
 
-
-
 router.post('/login', async (req, res) => {
-    req.session.user = req.body
-    res.redirect('/')
+    try {
+        const { email, password } = req.body;
+        const user = await Users.findOne({ email: email });
+
+        if (!user) { //verifie si user existe
+            return res.status(400).json({ message: 'Adresse e-mail ou mot de passe incorrect.' });
+        }
+
+        // Vérifiez le mot de passe
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Adresse e-mail ou mot de passe incorrect.' });
+        }
+        res.render('index', { user: req.session.user })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la connexion.' });
+    }
 })
 
 router.get('/register', async (req, res) => {
@@ -110,13 +100,31 @@ router.get('/register', async (req, res) => {
 })
 
 router.post('/register', async (req, res) => {
-    // Todo
-    res.redirect('/')
-})
+    try {
+        const { username, email, password } = req.body;
+
+        const existingUser = await Users.findOne({ email }); //verifier user n'existe pas
+        if (existingUser) {
+            return res.status(400).json({ message: 'Cet utilisateur existe déjà.' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newUser = new Users({ username, email,  password: hashedPassword  });
+        await newUser.save();
+        res.redirect('/login');
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de inscription.' });
+    }
+});
 
 router.get('/logout', async (req, res) => {
     req.session.destroy()
     res.redirect('/login')
 })
+
+// router.use('/users', routeUser)
 
 module.exports = router;
