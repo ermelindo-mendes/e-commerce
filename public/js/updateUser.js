@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = updateUserForm.dataset.userId;
     const lastname = document.getElementById('lastname').value;
     const firstname = document.getElementById('firstname').value;
-    const username = document.getElementById('lastname').value;
+    const username = document.getElementById('username').value;
 
     const data = {
       lastname,

@@ -115,8 +115,42 @@ router.put('/user/update/:id', isLogin, async (req, res) => {
     }
 });
 
+router.get('/user/delete/:id', isLogin, async (req, res) => {
+    const userId = req.params.id;
 
-router.get('/profil', async (req, res) => {
+    try {
+        const user = await Users.findById(userId);
+
+        if (!user) {
+            return res.status(404).send('User not found.');
+        }
+        res.render('users/confirmUserDeletion', { user });
+
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).send('An error occurred while deleting the user');
+    }
+});
+
+// DELETE
+router.delete('/user/delete/:id', isLogin, async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const user = await Users.findByIdAndRemove(userId);
+
+        if (!user) {
+            return res.status(404).send('User not found.');
+        }
+        req.session.destroy()
+        res.status(200).render('users/login')
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).send('An error occurred while deleting the user');
+    }
+});
+
+router.get('/profil',isLogin, async (req, res) => {
     res.render('users/profil', { user: req.session.user })
 })
 

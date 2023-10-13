@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm User Deletion</title>
+</head>
+<body>
+    <h1>Confirm User Deletion</h1>
+    <p>Are you sure you want to delete user <%= user.username %>?</p>
+    <form id="deleteUserButton"  data-user-id="<%= user._id %>">
+        <button type="submit">Supprimer</button>
+    </form>  
+
+    <script src="/js/deleteUser.js"></script>
+</body>
+</html>
