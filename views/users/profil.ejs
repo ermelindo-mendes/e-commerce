@@ -4,23 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        /* Ajoutez votre CSS personnalisé ici si nécessaire */
+        main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
+    <%- include("../includes/navigation") -%>
     <main>
-        <%- include("../includes/navigation") -%>
-        <h1>Bienvenue <%= user.username %></h1>
-        <ul>
-          <li>Nom : <%= user.lastname %></li>
-          <li>Prénom : <%= user.firstname %></li>
-          <li>email : <%= user.email %></li>
-        </ul>
-        <a href="/user/update/<%= user._id %>">Modifier</a>
-        <form action="/user/delete/<%= user._id %>" method="POST" id="deleteUserForm">
-            <button type="submit">Supprimer l'utilisateur</button>
-        </form>
-    
-        <script src="/js/deleteUser.js"></script>
+        <div class="container mt-4">
+            <h1 class="text-center">Bienvenue <%= user.username %></h1>
+            <div class="card mx-auto" style="width: 45rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Informations utilisateur</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item">Nom : <%= user.lastname %></li>
+                        <li class="list-group-item">Prénom : <%= user.firstname %></li>
+                        <li class="list-group-item">Email : <%= user.email %></li>
+                    </ul>
+                    <a href="/user/update/<%= user._id %>" class="btn btn-primary mt-2">Modifier</a>
+        
+                    <form action="/user/delete/<%= user._id %>" method="POST" id="deleteUserForm" class="mt-2">
+                        <button type="submit" class="btn btn-danger">Supprimer l'utilisateur</button>
+                    </form>
+        
+                    <script src="/js/deleteUser.js"></script>
+                </div>
+            </div>
+        </div>
+        
     </main>
 </body>
 </html>

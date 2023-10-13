@@ -1,17 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
-    <title>Détail du produit</title>
-    <link rel="stylesheet" href="css/index.css">
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Connexion</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+      <style>
+          /* Ajoutez votre CSS personnalisé ici si nécessaire */
+          main {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              margin: 0;
+          }
+      </style>
   </head>
   <body>
     <%- include("../includes/navigation") -%>
-    <h1>Détail du produit</h1>
-    <h2>Nom du produit : <%= product.name %></h2>
-    <p>Catégorie : <%= product.category %></p>
-    <p>Description : <%= product.description %></p>
-    <p>Image : <img src="<%= product.image %>" alt="Image du produit"></p>
-
+    <main>
+      <div class="container mt-4">
+        <div class="card mx-auto" style="width: 50rem;">
+            <div class="card-body">
+                <h5 class="card-title"><%= product.name %></h5>
+                <h6 class="card-subtitle mb-2 text-muted">Détail du produit</h6>
+                <p class="card-text">
+                    Catégorie : <%= product.category %><br>
+                    Description : <%= product.description %><br>
+                    Image : <img src="<%= product.image %>" alt="Image du produit" class="img-fluid">
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    
+    </main>
     <a href="/products">Retour à la liste des produits</a>
   </body>
 </html>

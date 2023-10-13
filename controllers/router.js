@@ -38,24 +38,28 @@ router.post('/login', async (req, res) => {
         const { email, password } = req.body;
         const user = await Users.findOne({ email: email });
 
-        if (!user) { //verifie si user existe
-            return res.status(400).json({ message: 'Adresse e-mail ou mot de passe incorrect.' });
+        if (!user) { // Vérifiez si l'utilisateur existe
+            req.flash('error', 'Adresse e-mail ou mot de passe incorrect.');
+            return res.redirect('/login');
         }
 
         // Vérifiez le mot de passe
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            return res.status(400).json({ message: 'Adresse e-mail ou mot de passe incorrect.' });
+            req.flash('error', 'Adresse e-mail ou mot de passe incorrect.');
+            return res.redirect('/login');
         }
+
         req.session.user = user;
 
-        res.render('index', { user })
+        res.render('index', { user });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Erreur lors de la connexion.' });
+        req.flash('error', 'Erreur lors de la connexion.');
+        res.redirect('/login');
     }
-})
+});
 
 router.get('/register', async (req, res) => {
     res.render('users/register')
