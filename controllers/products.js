@@ -14,44 +14,67 @@ router.use(flash());
 router.get('/', async (req, res) =>{
     try {
         const products = await Products.find({});
-        const successMessage = req.flash('success'); 
-        res.render('products/index', { products, successMessage });
+        const message = req.flash(); 
+        res.render('products/index', { products, message });
     } catch (error) {
-            res.status(500).send(error);
+        // res.status(500).flash(error);
+        res.status(500).send(error);
     }
 });
 
+// router.get('/detail/:id', async (req, res) => {
+//     const { id } = req.params;
+//     try {
+//       const product = await Products.findById(id);
+//       if (product) {
+//         res.render('products/detail', { product }); 
+//       } else {
+//         res.send('Produit introuvable');
+//       }
+//     } catch (error) {
+//       res.status(500).send(error);
+//     }
+//   });
+  
+
 // findById
-router.get('/get/:id', async (req, res) => {
+router.get('/detail/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const product = await Products.findById({id: id}).exec();
+        const product = await Products.findById({_id: id}).exec();
         if (product) {
-            res.send(product);
+            res.render('products/detail', { product }); 
           } else {
-            res.send('Produit introuvable');
+            req.flash('error', 'Produit introuvable');
+            res.status(404).send("Produit introuvable.");
+            res.redirect('/products');
           }
     } catch (error) {  
         res.status(500).send(error);
+        // res.status(500).flash(error);
     }
 });
 
 router.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
+    
     try {
-        const product = await Products.findOneAndDelete({id: id});
-        if (product) {
-            res.send(product);
-        }
-        else {
-            res.send('impossible de supprimer le produit');
-        }
+      const product = await Products.findOneAndDelete({ _id: id });
+      if (product) {
+        req.flash('success', 'Produit supprimé avec succès');
+        res.redirect('/products');
+        
+      } else {
+        req.flash('error', 'Impossible de supprimer le produit');
+        res.redirect('/products');
+      }
     } catch (error) {
-        res.status(500).send(error);
+      req.flash('error', 'Une erreur s\'est produite lors de la suppression du produit');
+      res.status(500).send(error);
     }
-});
-
-router.get('/update/:id', async  (req, res) => {
+  });
+  
+  router.get('/update/:id', async  (req, res) => {
     const { id } = req.params;
     try {
         const product = await Products.findById(id).exec();
@@ -73,7 +96,11 @@ router.get('/update/:id', async  (req, res) => {
         image: image,
       }, { new: true });
       if (product) {
+        // res.redirect('/products');
+        // req.flash('success', 'Le produit a été mise à jour avec succès.');
         res.send(product);
+        
+        // 
       } else {
         res.status(404).send("Produit introuvable.");
       }
@@ -81,6 +108,40 @@ router.get('/update/:id', async  (req, res) => {
       res.status(500).send(error);
     }
   });
+// router.get('/update/:id', async  (req, res) => {
+//     const { id } = req.params;
+//     try {
+//         const product = await Products.findById(id).exec();
+//         res.render('products/update', { product });
+//     } catch (error) {
+//         // res.status(500).flash(error);
+//         res.status(500).send(error);
+//     }
+//   });
+
+//   router.put('/update/:id', async (req, res) => {
+//     const { id } = req.params;
+//     const { name, category, description, image } = req.body;
+  
+//     try {
+//       const product = await Products.findByIdAndUpdate(id, {
+//         name: name,
+//         category: category,
+//         description: description,
+//         image: image,
+//       }, { new: true });
+
+//       if (product) {
+//         // req.flash('success', 'Le produit a été mise à jour avec succès.');
+//         // res.redirect('/products');
+//       } else {
+//         req.flash('error', 'Impossible de mise à jour le produit.');
+//         res.status(404).send("Produit introuvable.");
+//       }
+//     } catch (error) {
+//       res.status(500).send(error);
+//     }
+//   });
   
 
 router.get('/add', (req, res) => {
@@ -94,9 +155,10 @@ router.post('/add', async (req, res) => {
         const product = new Products({ name, category, description, image });
         await product.save();
         //res.send(product);
-        req.flash('success', 'Produit créé avec succès');
+        req.flash('success', 'Le produit a été créé avec succès.');
         res.redirect('/products');
     } catch (error) {
+        req.flash('error', 'Imposible de crée le produit');
         res.status(500).send(error);
     }
 });
