@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <main>
+        <%- include("../includes/navigation") -%>
+        <h1>Bienvenue <%= user.username %></h1>
+        <ul>
+          <li>Nom : <%= user.username %></li>
+          <li>Prénom : <%= user.firstname %></li>
+          <li>email : <%= user.email %></li>
+        </ul>
+        <a href="/user/update/<%= user.id %>">Modifier</a>
+        <a href="/user/delete/<%= user.id %>">Supprimer son compte</a>
+    </main>
+</body>
+</html>

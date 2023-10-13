@@ -13,10 +13,10 @@ const isLogin = (req, res, next) => {
 }
 
 const isAdmin = (req, res, next) => {
-    if(req.session && req.session.user.access == 'admin'){
+    if(req.session && req.session.user && req.session.user.access === 'admin'){
         next()
     } else {
-        res.redirect('/')
+        res.status(403).send('Acces refusé');
     }
 }
 
@@ -25,55 +25,9 @@ router.get('/',isLogin, async (req, res) => {
 })
 
 router.get('/login', async (req, res) => {
-    res.render('login')
+    res.render('users/login')
 })
 
-// CRUD User
-
-// get All
-router.get('/users', async(req, res) => {
-    try {
-        const users = await Users.find({});
-        res.send(users);
-      } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-      }
-})
-
-// Delete
-router.delete('/user/:email', async (req, res) => {
-    const { email } = req.params;
-    try {
-        const user = await Users.findOneAndDelete({ email: email });
-        res.send(user);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-    }
-})
-
-// Update
-router.put('/user/:email', async (req, res) => {
-    const { email } = req.params;
-    const { username } = req.body; 
-    try {
-        const user = await Users.findOneAndUpdate(
-            { email: email }, 
-            { username: username }, 
-            { new: true } 
-        );
-
-        if (user) {
-            res.send(user);
-        } else {
-            res.status(404).send("Aucun utilisateur trouvé avec cet e-mail.");
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-    }
-});
 
 router.post('/login', async (req, res) => {
     try {
@@ -101,12 +55,12 @@ router.post('/login', async (req, res) => {
 })
 
 router.get('/register', async (req, res) => {
-    res.render('register')
+    res.render('users/register')
 })
 
 router.post('/register', async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, lastname, firstname } = req.body;
 
         const existingUser = await Users.findOne({ email }); //verifier user n'existe pas
         if (existingUser) {
@@ -116,7 +70,7 @@ router.post('/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = new Users({ username, email,  password: hashedPassword  });
+        const newUser = new Users({ username, email,  password: hashedPassword, lastname, firstname });
         await newUser.save();
         res.redirect('/login');
     } catch (error) {
@@ -124,6 +78,27 @@ router.post('/register', async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de inscription.' });
     }
 });
+
+router.post('/user/update', isLogin, async (req, res) => {
+    const userId = req.session.user.id;  // Assuming you have a user id in the session
+
+    try {
+        // Get the updated user data from the request body
+        const updatedUserData = req.body;  // Assuming req.body contains the updated user data
+
+        // Update the user based on the user id
+        await updateUserById(userId, updatedUserData);
+
+        res.status(200).send('User updated successfully');
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).send('An error occurred while updating the user');
+    }
+});
+
+router.get('/profil', async (req, res) => {
+    res.render('users/profil', { user: req.session.user })
+})
 
 router.get('/logout', async (req, res) => {
     req.session.destroy()
