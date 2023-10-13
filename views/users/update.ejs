@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Modifier votre profil</title>
+  </head>
+  <body>
+    <%- include("../includes/navigation") -%>
+    <h1>Modifier votre profil</h1>
+    <form id="updateUserForm"  data-user-id="<%= user._id %>">
+      <label for="lastname">Nom</label>
+      <input type="text" name="lastname" id="lastname" value="<%= user.lastname %>" required>
+
+      <label for="firstname">Prenom</label>
+      <input type="text" name="firstname" id="firstname" value="<%= user.firstname %>">
+
+      <label for="username">Pseudo</label>
+      <input type="text" name="username" id="username" value="<%= user.username %>" >
+
+      <button type="submit">Mettre à jour</button>
+    </form>
+
+    <div id="errorMessage"></div>
+
+    <script src="/js/updateUser.js"></script>
+  </body>
+</html>

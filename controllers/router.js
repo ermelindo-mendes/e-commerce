@@ -5,6 +5,8 @@ const Users     = require('../models/users');
 // const routeUser = express.Router('./controllers/users');
 // constrouteUser = express.Router('./controllers/users')
 const routeProd = require('./products');
+const flash = require('connect-flash');
+router.use(flash());
 
 const isLogin = (req, res, next) => {
     if(req.session && req.session.user) {
@@ -80,22 +82,39 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/user/update', isLogin, async (req, res) => {
-    const userId = req.session.user.id;  // Assuming you have a user id in the session
+router.get('/user/update/:id', isLogin, async (req, res) => {
+    const userId = req.params.id;
 
     try {
-        // Get the updated user data from the request body
-        const updatedUserData = req.body;  // Assuming req.body contains the updated user data
-
-        // Update the user based on the user id
-        await updateUserById(userId, updatedUserData);
-
-        res.status(200).send('User updated successfully');
+        const user = await Users.findById(userId);
+        res.render('users/update', { user });
     } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(500).send('An error occurred while updating the user');
+        res.status(500).send(error);
     }
 });
+
+router.put('/user/update/:id', isLogin, async (req, res) => {
+    const userId = req.params.id;
+    const { username , firstname, lastname } = req.body;  
+
+    try {
+        const updatedUser = await Users.findByIdAndUpdate(userId, {  
+            username: username,
+            lastname: lastname,
+            firstname: firstname},{ new: true });
+
+        if (!updatedUser) {
+            return res.status(404).send("Utilisateur introuvable");
+        }
+        req.session.user = updatedUser;
+
+        res.status(200).render('users/profil', { user: req.session.user })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la modification.' });
+    }
+});
+
 
 router.get('/profil', async (req, res) => {
     res.render('users/profil', { user: req.session.user })

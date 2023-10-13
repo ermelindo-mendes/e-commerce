@@ -11,12 +11,12 @@
         <%- include("../includes/navigation") -%>
         <h1>Bienvenue <%= user.username %></h1>
         <ul>
-          <li>Nom : <%= user.username %></li>
+          <li>Nom : <%= user.lastname %></li>
           <li>Prénom : <%= user.firstname %></li>
           <li>email : <%= user.email %></li>
         </ul>
-        <a href="/user/update/<%= user.id %>">Modifier</a>
-        <a href="/user/delete/<%= user.id %>">Supprimer son compte</a>
+        <a href="/user/update/<%= user._id %>">Modifier</a>
+        <a href="/user/delete/<%= user._id %>">Supprimer son compte</a>
     </main>
 </body>
 </html>
