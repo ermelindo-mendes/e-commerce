@@ -6,26 +6,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier un produit</title>
-    <link rel="stylesheet" href="css/index.css">
   </head>
   <body>
     <main>
       <%- include("../includes/navigation") -%>
       <h1>Modifier un produit</h1>
       <form id="updateProductForm"  data-product-id="<%= product._id %>">
-        <label for="name">Nom du produit</label>
-        <input type="text" name="name" id="name" value="<%= product.name %>" required>
+        <div class="form-group">
+          <label for="name">Nom du produit</label>
+          <input type="text" name="name" class="form-control" id="name" value="<%= product.name %>" required>
+        </div>
+        <div class="form-group">
+          <label for="category">Catégorie</label>
+          <input type="text"  name="category" class="form-control" id="category" value="<%= product.category %>">
+        </div>
+        
+        <div class="form-group">
+          <label for="image">Image (URL)</label>
+          <input type="text" class="form-control" name="image" id="image" value="<%= product.image %>">
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea class="form-control" name="description" id="description" rows="3"><%= product.description %></textarea>
+        </div>
 
-        <label for="category">Catégorie</label>
-        <input type="text" name="category" id="category" value="<%= product.category %>">
-
-        <label for="description">Description</label>
-        <textarea name="description" id="description"><%= product.description %></textarea>
-
-        <label for="image">Image (URL)</label>
-        <input type="text" name="image" id="image" value="<%= product.image %>">
-
-        <button type="submit">Mettre à jour</button>
+        <button type="submit" class="btn btn-primary mb-2">Mettre à jour</button>
       </form>
 
       <div id="errorMessage"></div>
