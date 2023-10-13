@@ -5,11 +5,25 @@
   </head>
   <body>
     <h1>Liste des produits</h1>
+
+    <% if (message.success) { %>
+      <div class="alert alert-success">
+        <%= message.success %>
+      </div>
+    <% } %>
+    <% if (message.error) { %>
+      <div class="alert alert-danger">
+        <%= message.error %>
+      </div>
+    <% } %>
+    <div id="successMessage"></div>
+
     <% if (products.length > 0) { %>
       <ul>
         <% products.forEach(product => { %>
-          <li><%= product.name %></li>
+          <li><a href="/products/detail/<%= product._id %>"><%= product.name %></a></li>
           <a href="/products/update/<%= product._id %>">Modifier</a>
+          <a href="javascript:void(0);" class="delete-product" data-product-id="<%= product._id %>">Supprimer</a>
         <% }); %>
       </ul>
     <% } else { %>
@@ -17,5 +31,7 @@
     <% } %>
     
     <a href="/products/add">Ajouter un produit</a>
+
+    <script src="/js/deleteProduct.js"></script>
   </body>
 </html>
