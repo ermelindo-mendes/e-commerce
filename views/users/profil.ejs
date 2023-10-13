@@ -16,7 +16,11 @@
           <li>email : <%= user.email %></li>
         </ul>
         <a href="/user/update/<%= user._id %>">Modifier</a>
-        <a href="/user/delete/<%= user._id %>">Supprimer son compte</a>
+        <form action="/user/delete/<%= user._id %>" method="POST" id="deleteUserForm">
+            <button type="submit">Supprimer l'utilisateur</button>
+        </form>
+    
+        <script src="/js/deleteUser.js"></script>
     </main>
 </body>
 </html>
