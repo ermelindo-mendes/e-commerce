@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 let router      = express.Router();
 const Users     = require('../models/users');
 // const routeUser = express.Router('./controllers/users');
+// constrouteUser = express.Router('./controllers/users')
+const routeProd = require('./products');
 
 const isLogin = (req, res, next) => {
     if(req.session && req.session.user) {
@@ -32,7 +34,6 @@ router.get('/login', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-
         const user = await Users.findOne({ email: email });
 
         if (!user) { //verifie si user existe
@@ -104,6 +105,8 @@ router.get('/logout', async (req, res) => {
     req.session.destroy()
     res.redirect('/login')
 })
+
+router.use('/products', routeProd);
 
 // router.use('/users', routeUser)
 
