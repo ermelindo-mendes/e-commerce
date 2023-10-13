@@ -3,6 +3,7 @@ const express   = require('express');
 const path      = require('path');
 const session   = require('express-session');
 const mongoose  = require('mongoose');
+const flash = require('connect-flash');
 
 const routes    = require('./controllers/router')
 let app         = express();
@@ -32,6 +33,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 // definir les routes du controller "router" sur les routes /
 app.use('/', routes)
+// ajout de messages flash
+app.use(flash());
 
 app.listen(process.env.PORT, () => {
     console.log(`Server started on port ${process.env.PORT}`);

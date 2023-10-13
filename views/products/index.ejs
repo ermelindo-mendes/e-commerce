@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Liste des produits</title>
+  </head>
+  <body>
+    <h1>Liste des produits</h1>
+    <% if (products.length > 0) { %>
+      <ul>
+        <% products.forEach(product => { %>
+          <li><%= product.name %></li>
+          <a href="/products/update/<%= product._id %>">Modifier</a>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <p>Aucun produit n'est disponible pour le moment.</p>
+    <% } %>
+    
+    <a href="/products/add">Ajouter un produit</a>
+  </body>
+</html>
