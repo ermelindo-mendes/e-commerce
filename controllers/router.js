@@ -2,7 +2,7 @@ const express   = require('express');
 const bcrypt = require('bcrypt');
 let router      = express.Router();
 const Users     = require('../models/users');
-// constrouteUser = express.Router('./controllers/users')
+// const routeUser = express.Router('./controllers/users');
 
 const isLogin = (req, res, next) => {
     if(req.session && req.session.user) {
@@ -12,17 +12,19 @@ const isLogin = (req, res, next) => {
     }
 }
 
+const isAdmin = (req, res, next) => {
+    if(req.session && req.session.user.access == 'admin'){
+        next()
+    } else {
+        res.redirect('/')
+    }
+}
+
 router.get('/',isLogin, async (req, res) => {
     res.render('index', { user: req.session.user })
 })
 
 router.get('/login', async (req, res) => {
-    // let john = new Users({
-    //     username: 'john',
-    //     email: 'john',
-    //     password: 'john',
-    // })
-    // await john.save()
     res.render('login')
 })
 
@@ -76,6 +78,7 @@ router.put('/user/:email', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+
         const user = await Users.findOne({ email: email });
 
         if (!user) { //verifie si user existe
@@ -88,7 +91,9 @@ router.post('/login', async (req, res) => {
         if (!isPasswordValid) {
             return res.status(400).json({ message: 'Adresse e-mail ou mot de passe incorrect.' });
         }
-        res.render('index', { user: req.session.user })
+        req.session.user = user;
+
+        res.render('index', { user })
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erreur lors de la connexion.' });
