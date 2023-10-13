@@ -2,8 +2,11 @@
 <html>
   <head>
     <title>Liste des produits</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/catalogue.css">
   </head>
   <body>
+    <%- include("../includes/navigation") -%>
     <h1>Liste des produits</h1>
 
     <% if (message.success) { %>
@@ -17,20 +20,37 @@
       </div>
     <% } %>
     <div id="successMessage"></div>
-
     <% if (products.length > 0) { %>
-      <ul>
+      <div class='container-fluid row row-cols-1 row-cols-md-2 g-4'>
         <% products.forEach(product => { %>
-          <li><a href="/products/detail/<%= product._id %>"><%= product.name %></a></li>
-          <a href="/products/update/<%= product._id %>">Modifier</a>
-          <a href="javascript:void(0);" class="delete-product" data-product-id="<%= product._id %>">Supprimer</a>
+        <div class="card mx-auto col-md-3 col-10 mt-5 pt-4 ">
+            <div class="d-flex sale ">
+                <div class="btn">SALE</div>
+            </div>
+            <img class='mx-auto img-thumbnail'
+                src="<%= product.image %>"
+                width="auto" height="auto"/>
+            <div class="card-body text-center mx-auto">
+                <h5 class="card-title"><a href="/products/detail/<%= product._id %>"><%= product.name %></a></h5>
+                <p class="card-text"><%= product.price %></p>
+                <% try { %>
+                    <% if (user && user.access === "admin") { %>
+                        <a href="/products/update/<%= product._id %>" class="btn btn-primary">Modifier</a>
+                        <a href="javascript:void(0);" class="delete-product btn btn-danger" data-product-id="<%= product._id %>">Supprimer</a>
+                    <% } %>
+                <% } catch (e) {} %>
+            </div>
+        </div>
         <% }); %>
-      </ul>
+    </div>    
     <% } else { %>
       <p>Aucun produit n'est disponible pour le moment.</p>
     <% } %>
-    
-    <a href="/products/add">Ajouter un produit</a>
+    <% try { %>
+      <% if (user && user.access === "admin") { %>
+        <a href="/products/add">Ajouter un produit</a>
+    <% } %>
+    <% } catch (e) {} %>
 
     <script src="/js/deleteProduct.js"></script>
   </body>
