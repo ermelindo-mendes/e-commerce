@@ -3,9 +3,17 @@ Express framework and the `express.Router()` function to create the router objec
 const express   = require('express');
 let router      = express.Router();
 const Products  = require('../models/products');
-const flash = require('connect-flash');
+const flash     = require('connect-flash');
 
 router.use(flash());
+
+const isAdmin = (req, res, next) => {
+    if(req.session && req.session.user && req.session.user.access === 'admin'){
+        next()
+    } else {
+        res.status(403).send('Acces refusé');
+    }
+}
 
 
 // /Products 
@@ -13,37 +21,24 @@ router.use(flash());
 // get all
 router.get('/', async (req, res) =>{
     try {
+      const user = req.session.user;
         const products = await Products.find({});
         const message = req.flash(); 
-        res.render('products/index', { products, message });
+        res.render('products/index', { products, message, user });
     } catch (error) {
-        // res.status(500).flash(error);
         res.status(500).send(error);
     }
 });
 
-// router.get('/detail/:id', async (req, res) => {
-//     const { id } = req.params;
-//     try {
-//       const product = await Products.findById(id);
-//       if (product) {
-//         res.render('products/detail', { product }); 
-//       } else {
-//         res.send('Produit introuvable');
-//       }
-//     } catch (error) {
-//       res.status(500).send(error);
-//     }
-//   });
   
-
 // findById
 router.get('/detail/:id', async (req, res) => {
     const { id } = req.params;
+    const user = req.session.user;
     try {
         const product = await Products.findById({_id: id}).exec();
         if (product) {
-            res.render('products/detail', { product }); 
+            res.render('products/detail', { product, user }); 
           } else {
             req.flash('error', 'Produit introuvable');
             res.status(404).send("Produit introuvable.");
@@ -51,11 +46,10 @@ router.get('/detail/:id', async (req, res) => {
           }
     } catch (error) {  
         res.status(500).send(error);
-        // res.status(500).flash(error);
     }
 });
 
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', isAdmin, async (req, res) => {
     const { id } = req.params;
     
     try {
@@ -74,17 +68,18 @@ router.delete('/delete/:id', async (req, res) => {
     }
   });
   
-  router.get('/update/:id', async  (req, res) => {
+  router.get('/update/:id',isAdmin, async  (req, res) => {
     const { id } = req.params;
+    const user = req.session.user;
     try {
         const product = await Products.findById(id).exec();
-        res.render('products/update', { product });
+        res.render('products/update', { product, user });
     } catch (error) {
         res.status(500).send(error);
     }
   });
 
-  router.put('/update/:id', async (req, res) => {
+  router.put('/update/:id', isAdmin, async (req, res) => {
     const { id } = req.params;
     const { name, category, description, image } = req.body;
   
@@ -96,8 +91,6 @@ router.delete('/delete/:id', async (req, res) => {
         image: image,
       }, { new: true });
       if (product) {
-        // res.redirect('/products');
-        // req.flash('success', 'Le produit a été mise à jour avec succès.');
         res.send(product);
         
         // 
@@ -107,49 +100,14 @@ router.delete('/delete/:id', async (req, res) => {
     } catch (error) {
       res.status(500).send(error);
     }
-  });
-// router.get('/update/:id', async  (req, res) => {
-//     const { id } = req.params;
-//     try {
-//         const product = await Products.findById(id).exec();
-//         res.render('products/update', { product });
-//     } catch (error) {
-//         // res.status(500).flash(error);
-//         res.status(500).send(error);
-//     }
-//   });
+  });  
 
-//   router.put('/update/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const { name, category, description, image } = req.body;
-  
-//     try {
-//       const product = await Products.findByIdAndUpdate(id, {
-//         name: name,
-//         category: category,
-//         description: description,
-//         image: image,
-//       }, { new: true });
-
-//       if (product) {
-//         // req.flash('success', 'Le produit a été mise à jour avec succès.');
-//         // res.redirect('/products');
-//       } else {
-//         req.flash('error', 'Impossible de mise à jour le produit.');
-//         res.status(404).send("Produit introuvable.");
-//       }
-//     } catch (error) {
-//       res.status(500).send(error);
-//     }
-//   });
-  
-
-router.get('/add', (req, res) => {
+router.get('/add', isAdmin, (req, res) => {
     res.render('products/addProduct');
   });
 
 // create
-router.post('/add', async (req, res) => {
+router.post('/add', isAdmin, async (req, res) => {
     const { name, category, description, image } = req.body;
     try {
         const product = new Products({ name, category, description, image });
@@ -164,7 +122,3 @@ router.post('/add', async (req, res) => {
 });
 
 module.exports = router;
-
-// router.use('/products' routeProd);
-
-// const routeProd = require('./products')

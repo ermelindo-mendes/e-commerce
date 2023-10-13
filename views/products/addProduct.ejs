@@ -4,8 +4,10 @@
 <html>
   <head>
     <title>Créer un produit</title>
+    <link rel="stylesheet" href="css/index.css">
   </head>
   <body>
+    <%- include("../includes/navigation") -%>
     <h1>Créer un produit</h1>
     <form action="/products/add" method="POST">
       <label for="name">Nom du produit</label>
