@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -10,29 +8,31 @@
   <body>
     <main>
       <%- include("../includes/navigation") -%>
-      <h1>Modifier un produit</h1>
-      <form id="updateProductForm"  data-product-id="<%= product._id %>">
-        <div class="form-group">
-          <label for="name">Nom du produit</label>
-          <input type="text" name="name" class="form-control" id="name" value="<%= product.name %>" required>
-        </div>
-        <div class="form-group">
-          <label for="category">Catégorie</label>
-          <input type="text"  name="category" class="form-control" id="category" value="<%= product.category %>">
-        </div>
-        
-        <div class="form-group">
-          <label for="image">Image (URL)</label>
-          <input type="text" class="form-control" name="image" id="image" value="<%= product.image %>">
-        </div>
-        
-        <div class="form-group">
-          <label for="description">Description</label>
-          <textarea class="form-control" name="description" id="description" rows="3"><%= product.description %></textarea>
-        </div>
+      <h1 style="text-align: center; margin-top:10px;">Modifier un produit</h1>
+      <div class="d-flex justify-content-center align-items-center" style="height: 60vh;">
+        <form id="updateProductForm"  data-product-id="<%= product._id %>" class="w-50">
+          <div class="form-group ">
+            <label for="name">Nom du produit</label>
+            <input type="text" name="name" class="form-control" id="name" value="<%= product.name %>" required>
+          </div>
+          <div class="form-group">
+            <label for="category">Catégorie</label>
+            <input type="text"  name="category" class="form-control" id="category" value="<%= product.category %>">
+          </div>
+          
+          <div class="form-group">
+            <label for="image">Image (URL)</label>
+            <input type="text" class="form-control" name="image" id="image" value="<%= product.image %>">
+          </div>
+          
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" name="description" id="description" rows="3"><%= product.description %></textarea>
+          </div>
 
-        <button type="submit" class="btn btn-primary mb-2">Mettre à jour</button>
-      </form>
+          <button type="submit" class="btn btn-primary mb-2" style="margin-top:10px;">Mettre à jour</button>
+        </form>
+      </div>
 
       <div id="errorMessage"></div>
       <div id="successMessage"></div>

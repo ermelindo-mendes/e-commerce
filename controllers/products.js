@@ -103,12 +103,14 @@ router.delete('/delete/:id', isAdmin, async (req, res) => {
   });  
 
 router.get('/add', isAdmin, (req, res) => {
-    res.render('products/addProduct');
+    const user = req.session.user;
+    res.render('products/addProduct', { user });
   });
 
 // create
 router.post('/add', isAdmin, async (req, res) => {
     const { name, category, description, image } = req.body;
+
     try {
         const product = new Products({ name, category, description, image });
         await product.save();

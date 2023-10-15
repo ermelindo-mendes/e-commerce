@@ -83,6 +83,8 @@ body{
 
 .btn11 {
     background: transparent;
+    /* margin-left: 100px; */
+    
     border: 2px solid #ff4157;
     color: #ff4157;
 }
@@ -90,6 +92,38 @@ body{
 .btn11:hover {
     background: #ff4157;
     color: #fff;
+}
+
+.btn22 {
+    background: transparent;
+    /* margin-right: 100px; */
+    border: 2px solid #4285f4;
+    color: #4285f4;
+}
+
+.btn22:hover {
+    background: #4285f4;
+    color: #fff;
+}
+.detail {
+    color: #0c0f0a;
+    text-decoration: none;
+    margin-left: 80pt;
+
+}
+
+.btn-ajouter {
+    background: #111111; 
+    color: #fff; 
+    border: 2px solid #111111;
+    text-decoration: none;
+    border-radius: 35px;
+    padding: 6px 8px;
+}
+
+.btn-ajouter:hover {
+    background: transparent; 
+    color: #111111;
 }
 
 .btn22 {
@@ -102,7 +136,4 @@ body{
     background: #4285f4;
     color: #fff;
 }
-.test {
-    margin-left: 80pt;
 
-}
