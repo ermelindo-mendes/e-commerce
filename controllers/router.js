@@ -2,9 +2,8 @@ const express   = require('express');
 const bcrypt = require('bcrypt');
 let router      = express.Router();
 const Users     = require('../models/users');
-// const routeUser = express.Router('./controllers/users');
-// constrouteUser = express.Router('./controllers/users')
 const routeProd = require('./products');
+const Products = require('../models/products');
 const flash = require('connect-flash');
 router.use(flash());
 
@@ -24,9 +23,18 @@ const isAdmin = (req, res, next) => {
     }
 }
 
-router.get('/',isLogin, async (req, res) => {
-    res.render('index', { user: req.session.user })
-})
+
+router.get('/', isLogin, async (req, res) => {
+  try {
+    const products = await Products.find({});
+
+    res.render('index', { user: req.session.user, products });
+  } catch (error) {
+    console.error('Erreur lors de la récupération du nombre de produits :', error);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
 
 router.get('/login', async (req, res) => {
     res.render('users/login')
@@ -37,7 +45,7 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await Users.findOne({ email: email });
-
+        const products = await Products.find({});
         if (!user) { // Vérifiez si l'utilisateur existe
             req.flash('error', 'Adresse e-mail ou mot de passe incorrect.');
             return res.redirect('/login');
@@ -53,7 +61,7 @@ router.post('/login', async (req, res) => {
 
         req.session.user = user;
 
-        res.render('index', { user });
+        res.render('index', { user, products });
     } catch (error) {
         console.error(error);
         req.flash('error', 'Erreur lors de la connexion.');
