@@ -12,7 +12,6 @@ Bienvenue dans le dépôt. Voici comment vous pouvez le configurer et l'exécute
    cd votre-projet
 
    npm install
-    ```bash
 
 2. Configuration de .env
 
@@ -30,6 +29,5 @@ PORT: Configurez le port sur lequel vous souhaitez exécuter l'application (par 
 3. Exécution du projet
 ```bash
 npm run dev
-```bash
 
 Ouvrez un navigateur et accédez à http://localhost:3000 (ou au port que vous avez configuré).
